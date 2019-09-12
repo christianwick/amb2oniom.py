@@ -43,10 +43,10 @@ What you need:
  
  
  
- Contributors:
- -------------
+Contributors:
+-------------
  
- Chris Wick (principle developer)
+  - Chris Wick (principle developer)
  
  
  
