@@ -108,9 +108,16 @@ class amb2oniom():
                     self._print_partners(n)
         print("\nfound {} link atoms.\n".format(len(
             [x for x in self.linkatoms if x != "" ])))
-        return self.linkatoms
 
     def set_layers(self,mask1="*",mask2=""):
+        """ set self.layers flags for all atoms
+
+        Parameters:
+        -----------
+        mask1 : str ; ambmask string
+        mask2 : str, optional ; ambmask string
+
+        """
         if mask1:
             layers1 = self.select_atoms(self.top,mask1,symbol1="H",symbol2="L")
         if mask2:
@@ -121,16 +128,35 @@ class amb2oniom():
         return(self.layers)
 
     def set_optflag(self,mask,symbol1=0,symbol2=-1):
+        """ set opflag for gaussian for all atoms
+
+        Parameters:
+        -----------
+        mask : str ; ambmask string
+        symbol1, symbol2 : str
+            used to set matching atoms to symbol1 and not matching atoms to
+            symbol2
+
+        """
         self.optflag=self.select_atoms(self.top,mask,symbol1,symbol2)
         return(self.optflag)
 
     def strip(self,mask="! *"):
+        """ strip atoms from topology
+
+        Parameters:
+        -----------
+        mask : str ; ambmaskstring
+
+        """
         self.top.strip(mask)
         self.layers = self.set_layers()
         self.optflag = self.select_atoms(self.top,"*",symbol1=0)
         self.linkatoms = ["" for x in range(self.top.ptr("NATOM"))]
 
     def print_net_charge_per_layer(self):
+        """ print the net charge for all layers and the total Charge
+        """
         items=sorted(set(self.layers))
         total_charge=0.0
         for item in items:
@@ -143,6 +169,13 @@ class amb2oniom():
         print("Total charge: {:7.4f}".format(total_charge))
 
     def write_com(self,outf=sys.stdout):
+        """ write gaussian com file
+
+        Parameters:
+        -----------
+        outf : TextIOWrapper (Default: sys.stdout)
+
+        """
         # gaussian link0 commands
         self.link0._write(outf)
         # gaussian route
@@ -234,7 +267,6 @@ class amb2oniom():
         Parameters:
         -----------
         idx : int; atom index
-
         """
         for partner in self.top.atoms[idx].bond_partners:
             print("   atom {} {} {} has a bond to {} {} {} ".format(
@@ -247,7 +279,6 @@ class amb2oniom():
         Parameters:
         -----------
         outf : TextIOWrapper (Default: sys.stdout)
-
         """
         for n,atom in enumerate(self.top.atoms):
             if self._a2g:
@@ -452,8 +483,19 @@ class amb2oniom():
 
     @staticmethod
     def select_atoms(top,mask,symbol1="H",symbol2="L"):
-        """
-        uses amber mask and returns a list with symbol information
+        """ label atoms in mask
+
+        Parameters:
+        -----------
+        top : :class:`parmed.amber.AmberParm`
+        mask : str ; ambmask string
+        symbol1, symbol2 : str, optional
+
+        Returns:
+        --------
+        selection : list
+            list with symbol1 for matching atoms and symbol2 for non-matching
+            atoms
         """
         selection=amber.AmberMask(top,mask).Selection()
         for idx in range(len(selection)):
@@ -516,7 +558,13 @@ class link0():
         """
         self.link0.update({a.upper():b.upper()})
 
-    def _write(self,outf):
+    def _write(self,outf=sys.stdout):
+        """ write link0 com selection
+
+        Parameter:
+        ----------
+        outf : TextIOWrapper (Default: sys.stdout)
+        """
         for k,val in self.link0.items():
             outf.write("%{}={}\n".format(k,val))
         outf.write("\n")
@@ -534,7 +582,6 @@ def _check_parmed_version():
     --------
     retval: boolean; True : version 3.0+
                      False : otherwise
-
     """
     ver =  pmd_version.split(".")
     # untagged versions have a different format, tagged versions have a
@@ -600,8 +647,8 @@ if __name__ == "__main__":
     import argparse
 
     args = parser()
-    print("\n Welcome to amb2oniom.py!\n")
-    print("    using parmed {} \n".format(pmd_version))
+    print("\nWelcome to amb2oniom.py!\n")
+    print("using parmed {} \n".format(pmd_version))
     if args.f:
         # read in input file and add args to args.
         # will overwrite command line arguments.
@@ -621,5 +668,5 @@ if __name__ == "__main__":
     if args.med: top.find_link_atoms("M")
     if args.cm: top.cm = args.cm
     if args.route: top.route = args.route
-    print("\n Writing com file.. \n \n")
+    print("\nWriting com file.. \n \n")
     top.write_com(args.o)
