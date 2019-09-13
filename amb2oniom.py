@@ -139,7 +139,7 @@ class amb2oniom():
         """
         self.optflag=self.select_atoms(self.top,mask,symbol1,symbol2)
 
-    def strip(self,mask="! *"):
+    def strip(self,mask="! *", write_parm=True, parm_suffix="amb2oniom"):
         """ strip atoms from topology
 
         Parameters:
@@ -151,6 +151,9 @@ class amb2oniom():
         self.set_layers()
         self.set_optflag()
         self.linkatoms = ["" for x in range(self.top.ptr("NATOM"))]
+        if write_parm:
+            self.top.write_parm(parm_suffix+".parm7")
+            self.top.write_rst7(parm_suffix+".rst7")
 
     def print_net_charge_per_layer(self):
         """ print the net charge for all layers and the total Charge
@@ -623,6 +626,10 @@ def parser(args=None,namespace=None):
     grp_lay.add_argument("-act", type=str, help="active atoms mask (ambmask)")
     grp_top=parser.add_argument_group("Topology changes")
     grp_top.add_argument("-strip", type=str, help="strip mask from top (ambmask)")
+    grp_top.add_argument("-suffix", type=str, default="amb2oniom",
+        help="suffix of stripped topology and restart files")
+    grp_top.add_argument("-no_parm", action="store_true", default=False,
+        help="do not write stripped parameter and restart file after stripping")
     grp_com=parser.add_argument_group("Gaussian input")
     grp_com.add_argument("-cm", type=str, default="0 1 0 1 0 1",
         help="charge and multiplicity line")
@@ -656,7 +663,9 @@ if __name__ == "__main__":
         sys.stderr.write("Parm and crd files are mandatory in batch mode!\n\n")
         sys.exit(1)
     top=amb2oniom(args.parm,xyz=args.crd,a2g=args.a2g,keep_types=args.keep_types)
-    if args.strip: top.strip(args.strip)
+    if args.strip:
+        if args.no_parm: top.strip(args.strip,write_parm=False)
+        else: top.strip(args.strip,write_parm=True,parm_suffix=args.suffix)
     if args.hi and args.med: top.set_layers(args.hi,args.med)
     elif args.hi: top.set_layers(args.hi)
     elif args.med: top.set_layers(args.med)

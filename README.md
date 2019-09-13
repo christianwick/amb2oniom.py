@@ -45,6 +45,10 @@ What you need:
 Examples:
 ---------
 
+  - print help message and exit
+    
+    ./amb2oniom.py -h
+
   - read in amb.top and amb.crd, select residue :20 as hi layer and 
     set the belly region to 10A around the high layer:
 
