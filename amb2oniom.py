@@ -105,7 +105,7 @@ class amb2oniom():
             for partner in self.top.atoms[n].bond_partners:
                 if self.layers[partner.idx] == low:
                     self.linkatoms[partner.idx] = "H " + str(n+1)
-                    print("\n  found linkatom: H {} bond to {}".format(
+                    print("\n  found linkatom: H {} is bonded to {}".format(
                         partner.idx+1,n+1))
                     self._print_partners(n)
         print("\nfound {} link atoms.\n".format(len(
