@@ -53,9 +53,9 @@ class amb2oniom():
         self.link0 = link0()
         self.route = "#P amber=(print,Softonly) geom=connect"
         self.cm = cm
-        self.layers = self.set_layers(*layermask)
+        self.set_layers(*layermask)
         self.linkatoms = ["" for x in range(self.top.ptr("NATOM"))]
-        self.optflag = self.set_optflag("*",symbol1=0)
+        self.set_optflag("*",symbol1=0)
         self.comment=comment
         # mainly debug options and testing:
         self._a2g = a2g
@@ -125,9 +125,8 @@ class amb2oniom():
             for n in range(len(layers1)):
                 if layers2[n] == "M" and layers1[n] == "L": layers1[n] = "M"
         self.layers=layers1
-        return(self.layers)
 
-    def set_optflag(self,mask,symbol1=0,symbol2=-1):
+    def set_optflag(self,mask="*",symbol1=0,symbol2=-1):
         """ set opflag for gaussian for all atoms
 
         Parameters:
@@ -139,7 +138,6 @@ class amb2oniom():
 
         """
         self.optflag=self.select_atoms(self.top,mask,symbol1,symbol2)
-        return(self.optflag)
 
     def strip(self,mask="! *"):
         """ strip atoms from topology
@@ -150,8 +148,8 @@ class amb2oniom():
 
         """
         self.top.strip(mask)
-        self.layers = self.set_layers()
-        self.optflag = self.select_atoms(self.top,"*",symbol1=0)
+        self.set_layers()
+        self.set_optflag()
         self.linkatoms = ["" for x in range(self.top.ptr("NATOM"))]
 
     def print_net_charge_per_layer(self):
