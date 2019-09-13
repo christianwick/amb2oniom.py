@@ -244,10 +244,10 @@ class amb2oniom():
         else:
             if not self._a2g:
                 at=self._wrap_leading_numbers(at)
+                if "*" in at: at=at.replace("*","star")
             if not self._keep_types:
                 if at.isupper(): at+="j"
                 else: at+="i"
-                if "*" in at: at.replace("*","star")
         return(at)
 
     def _wrap_leading_numbers(self,at):
@@ -450,37 +450,36 @@ class amb2oniom():
         """
         past=set()
         for dihedral in self.top.dihedrals:
-            # impropers are already correctly tagged
-            # with the improper flag.
-            if dihedral.improper:
-                a1 = dihedral.atom1
-                a2 = dihedral.atom2
-                a3 = dihedral.atom3
-                a4 = dihedral.atom4
-                # the central atom in amber impropers has to
-                # be at the 3rd position. otherwise the atom
-                # order is reversed. if that is also not true,
-                # there is something fishy with the dihedral
-                for atom in [a1,a2,a3,a4]:
-                    for oatom in [a1,a2,a3,a4]:
-                        if atom == oatom: continue
-                        if atom not in oatom.bond_partners: break
-                    else:
-                        a1,a2,a4 = sorted([x for x in [a1,a2,a3,a4] if x != atom])
-                        a3 = atom
+            # impropers are also not always correctly tagged
+            # with the improper flag. therefore we have to
+            # cycle through all of them...
+            a1 = dihedral.atom1
+            a2 = dihedral.atom2
+            a3 = dihedral.atom3
+            a4 = dihedral.atom4
+            # the central atom in amber impropers has to
+            # be at the 3rd position. otherwise the atom
+            # order is reversed. if that is also not true,
+            # there is something fishy with the dihedral
+            for atom in [a1,a2,a3,a4]:
+                for oatom in [a1,a2,a3,a4]:
+                    if oatom is atom: 
+                        continue
+                    if oatom not in atom.bond_partners:
                         break
-                at1 = a1.type
-                at2 = a2.type
-                at3 = a3.type
-                at4 = a4.type
-                if (at1,at2,at3,at4) in past: continue
-                past.add((at1,at2,at3,at4))
-                # here we have an improper with correct atom order.
-                Mag = dihedral.type.phi_k
-                PO = dihedral.type.phase
-                Period = dihedral.type.per
-                outf.write("ImpTrs {:3s} {:3s} {:3s} {:3s} {:11.7f} {:7.2f} {:4.1f} \n".format(
-                    *self._adjust_atom_types([at1,at2,at3,at4]),Mag,PO,Period))
+                # this will execute if we did not break out of
+                # the last for loop -> we found the central atom
+                else:
+                    at1,at2,at4 = sorted([x.type for x in [a1,a2,a3,a4] if x is not atom])
+                    at3 = atom.type
+                    if (at1,at2,at3,at4) in past: continue
+                    past.add((at1,at2,at3,at4))
+                    # by now we have an unique improper with correct atom order.
+                    Mag = dihedral.type.phi_k
+                    PO = dihedral.type.phase
+                    Period = dihedral.type.per
+                    outf.write("ImpTrs {:3s} {:3s} {:3s} {:3s} {:11.7f} {:7.2f} {:4.1f} \n".format(
+                        *self._adjust_atom_types([at1,at2,at3,at4]),Mag,PO,Period))
 
     #---------------------------------#
 
