@@ -659,8 +659,12 @@ if __name__ == "__main__":
     if args.f:
         # read in input file and add args to args.
         # will overwrite command line arguments.
-        content=args.f.read().split()
-        args=parser(content,args)
+        content=args.f.readlines()
+        file_args=[]
+        for line in content:
+            temp = line.strip().split(maxsplit=1)
+            for val in temp: file_args.append(val)
+        args=parser(file_args,args)
     if not args.parm or not args.crd:
         sys.stderr.write("Parm and crd files are mandatory in batch mode!\n\n")
         sys.exit(1)
