@@ -41,6 +41,27 @@ What you need:
  - a correct amber topology and coordinate files
  - a working copy of parmed (it is e.g. included in the AmberTools)
  
+
+Examples:
+---------
+
+  - read in amb.top and amb.crd, select residue :20 as hi layer and 
+    set the belly region to 10A around the high layer:
+
+    ./amb2oniom.py -p amb.top -c amb.top -hi ":20" -act ":20<:10"
+
+  - read in amb.top and amb.ncrst, strip resdiues 100-150:
+
+    ./amb2oniom.py -p amb.top -c amb.rst7 -strip ":100-150"
+
+  - modify gaussian route section and change charge multiplity
+
+    ./amb2oniom.py -p amb.top -c amb.crd -route "#P ONIOM(AM1/AMBER=Softonly)"\
+          -cm "0 1 0 2 0 2"
+
+NOTE: Don't forget to add the link atom types to your link atoms!! 
+      amb2oniom.py prints atom types of all atoms connected to the 
+      link atom host as a guide.
  
  
 Contributors:
