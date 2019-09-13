@@ -45,13 +45,15 @@ class amb2oniom():
     comment : str
         gaussian comment line
     """
-    def __init__(self,top,xyz,layermask=["*"],cm="0 1",
+    def __init__(self,top,xyz,layermask=["*"],cm="0 1 0 1 0 1",
             comment="amb2oniom",a2g=False,keep_types=False):
         # initialize all Arguments
         self.top = amber.AmberParm(top,xyz=xyz)
         self.params = amber.AmberParameterSet.from_structure(self.top)
         self.link0 = link0()
-        self.route = "#P amber=(print,Softonly) geom=connect"
+        route="#P ONIOM(bp86/def2SVP empiricalDispersion=GD3:amber=Softonly)"
+        route+="geom=connect"
+        self.route = route
         self.cm = cm
         self.set_layers(*layermask)
         self.linkatoms = ["" for x in range(self.top.ptr("NATOM"))]
