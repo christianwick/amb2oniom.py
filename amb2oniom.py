@@ -245,6 +245,7 @@ class amb2oniom():
             if not self._a2g:
                 at=self._wrap_leading_numbers(at)
                 if "*" in at: at=at.replace("*","star")
+                if "+" in at: at=at.replace("+","plus")
             if not self._keep_types:
                 if at.isupper(): at+="j"
                 else: at+="i"
@@ -425,6 +426,7 @@ class amb2oniom():
         the third atom is always the central atom, permutations of a1 a2 a4 are
         all referring to the same improper!
         """
+        print("  using parmed 3. \n")
         past=set()
         for (a1,a2,a3,a4),d_type in self.params.improper_periodic_types.items():
             a1,a2,a4 = sorted([a1,a2,a4])
@@ -448,6 +450,7 @@ class amb2oniom():
         have wrong atom order! (for example hn-ca-nh-hn became
         hn-nh-hn-ca in test cases (anniline//gaff)
         """
+        print("  using parmed 2. workaround..\n")
         past=set()
         for dihedral in self.top.dihedrals:
             # impropers are also not always correctly tagged
