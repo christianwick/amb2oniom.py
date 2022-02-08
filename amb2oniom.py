@@ -162,14 +162,19 @@ class amb2oniom():
         """
         items=sorted(set(self.layers))
         total_charge=0.0
+        total_num_electrons=0.0
         for item in items:
             charge=0.0
+            num_electrons=0.0
             for idx,val in enumerate(self.layers):
                 if val == item:
                     charge+=self.top.atoms[idx].charge
+                    num_electrons+=self.top.atoms[idx].atomic_number
             total_charge+=charge
-            print("Netcharge for layer {}: {:7.4f}".format(item,charge))
-        print("Total charge: {:7.4f}".format(total_charge))
+            total_num_electrons+=num_electrons
+            print("Netcharge for layer {}: {:7.4f} ({:7d} electrons)".format(item,charge,round(num_electrons)))
+        print("Total charge: {:7.4f} ({:7d} electrons)".format(total_charge, round(total_num_electrons)))
+
 
     def write_com(self,outf=sys.stdout):
         """ write gaussian com file
