@@ -51,8 +51,9 @@ class amb2oniom():
         self.top = amber.AmberParm(top,xyz=xyz)
         self.params = amber.AmberParameterSet.from_structure(self.top)
         self.link0 = link0()
-        route="#P ONIOM(bp86/def2SVP empiricalDispersion=GD3:amber=Softonly)"
-        route+="geom=connect"
+        route="#P ONIOM(bp86/def2SVP empiricalDispersion=GD3:amber=Softonly) "
+        route+="IOp(2/15=3) nosymm "
+        route+="geom=connect "
         self.route = route
         self.cm = cm
         self.set_layers(*layermask)
@@ -105,8 +106,9 @@ class amb2oniom():
             for partner in self.top.atoms[n].bond_partners:
                 if self.layers[partner.idx] == low:
                     self.linkatoms[partner.idx] = "H " + str(n+1)
-                    print("\n  found linkatom: H {} is bonded to {}".format(
-                        partner.idx+1,n+1))
+                    print("\n  found linkatom: LAH {}.{}.{}.{} is bonded to LAC {}.{}.{}.{}".format(
+                        partner.idx+1,partner.name,partner.element,partner.type,n+1,self.top.atoms[n].name,
+                        self.top.atoms[n].element,self.top.atoms[n].type))
                     self._print_partners(n)
         print("\nfound {} link atoms.\n".format(len(
             [x for x in self.linkatoms if x != "" ])))
@@ -278,9 +280,9 @@ class amb2oniom():
         idx : int; atom index
         """
         for partner in self.top.atoms[idx].bond_partners:
-            print("   atom {} {} {} has a bond to {} {} {} ".format(
-                idx+1,Element[self.top.atoms[idx].element],self.top.atoms[idx].type,
-                partner.idx+1,Element[partner.element],partner.type))
+            print("   atom {}.{}.{}.{} has a bond to {}.{}.{}.{}".format(
+                idx+1,self.top.atoms[idx].name,Element[self.top.atoms[idx].element],self.top.atoms[idx].type,
+                partner.idx+1,partner.name,Element[partner.element],partner.type))
 
     def _write_coordinates(self,outf=sys.stdout):
         """ write com coordinate section
