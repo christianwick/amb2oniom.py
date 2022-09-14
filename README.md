@@ -1,10 +1,10 @@
-Amber2Oniom.py // amb2oniom.py 
+# Amber2Oniom.py // amb2oniom.py 
 ------------------------------
 
 Convert Amber topologies to oniom input files.
 
 
-Description:
+## Description:
 ------------
 
 amb2oniom.py is a python3 script which converts amber topologies to oniom input
@@ -16,7 +16,7 @@ necessary to run amb2oniom.py. It is recommended to use the latest parmed
 version (or at least a stable version past 3.0.0).
 
 
-Install amb2oniom.py:
+## Install amb2oniom.py:
 ---------------------
 
 amb2oniom.py can be copied to any directory and used out of the box as 
@@ -25,7 +25,7 @@ from AmberTools: http://ambermd.org or directly from github:
 https://github.com/ParmEd/ParmEd )
 
 
-What it can do:
+## What it can do:
 ---------------
 
   - write gaussian input files for oniom calculations with Amber force fields.
@@ -35,14 +35,14 @@ What it can do:
   - select active atoms (the belly region)
   
   
-What you need:
+## What you need:
 --------------
 
  - a correct amber topology and coordinate files
  - a working copy of parmed (it is e.g. included in the AmberTools)
  
 
-Examples:
+## Examples:
 ---------
 
   - print help message and exit
@@ -68,10 +68,12 @@ NOTE: Don't forget to add the link atom types to your link atoms!!
       link atom host as a guide.
  
  
-Contributors:
--------------
- 
-  - Chris Wick (principle developer)
+## License / Permission of use
+The code is provided as-is without any warranty for its correctness under the MIT license (see LICENSE file)
+
+## Contact
+Dr. Christian R. Wick
+Friedrich-Alexander-Universität Erlangen-Nürnberg,  PULS Group, Institute for theoretical Physics and Competence Unit for Scientific Computing (CSC), Interdisciplinary Center for Nanostructured Films (IZNF), Cauerstrasse 3, 91058 Erlangen, Germany
  
  
  
